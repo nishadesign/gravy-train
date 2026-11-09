@@ -19,6 +19,12 @@ npm run eval
 
 The existing backend includes the original ADK implementation and portable agent configuration for future use. The presentation UI always selects local preview and requires no credentials. Live evaluations are skipped without a key.
 
+## GitHub Pages
+
+Visit [Gravy Train](https://nishadesign.github.io/gravy-train/). The Pages version runs the same local sample workflow entirely in your browser: planning, event edits, slow animations, readiness checks, and late-RSVP corrections all work without a server or API key. Each tab has its own sample session; refreshing starts fresh. Event details are not sent to a server.
+
+`npm run build:pages` builds the static site with the `/gravy-train/` asset path. To publish updates, run `npm test && npm run deploy:pages` with Git push access to this repository. The deployment script publishes only the built site to `gh-pages`, preserving its history and your working checkout. GitHub Pages serves that branch. Source changes on `main` are published only when you run the deployment command. The normal `npm run dev` setup still supports the local server.
+
 
 The gathering page shows one table with a status card above each agent: its current task, state, correction round when relevant, and saved result. Click a card to open the full output.
 

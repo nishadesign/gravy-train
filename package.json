@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "concurrently -k -n api,web \"tsx watch server/index.ts\" \"vite --host 127.0.0.1\"",
     "build": "tsc --noEmit && vite build",
+    "build:pages": "tsc --noEmit && vite build --mode pages",
+    "deploy:pages": "npm run build:pages && node scripts/deploy-pages.mjs",
     "start": "node --import tsx server/index.ts",
     "test": "node --import tsx --test tests/*.test.ts",
     "eval": "node --import tsx scripts/evaluate.ts"
