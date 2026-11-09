@@ -1,0 +1,36 @@
+[
+  {
+    "id": "harvest-table", "name": "Harvest & Hearth", "tagline": "A generous, ready-to-serve autumn spread",
+    "perPerson": 36, "deliveryFee": 45, "serviceRate": 0.12, "taxRate": 0.085, "staffingFee": 70, "equipmentFee": 30, "minimumGuests": 8,
+    "readyToServe": true, "setupMinutes": 30, "deadlineHours": 48,
+    "vegetarian": "FICTIONAL CATALOG: individual roasted squash entrées with lentils; vegetable stock in all vegetarian sides. Separate labeled trays and utensils.",
+    "nutAllergy": "FICTIONAL CATALOG: nut-free ingredients, dedicated preparation area and utensils, sealed and labeled allergy meal. No real vendor has confirmed these procedures for your event.",
+    "accessibility": "Staff can serve guests at their seats; buffet aisle must remain at least 36 inches clear.",
+    "menu": [
+      {"dish": "Herb-roasted turkey & gravy", "dietary": "Standard entrée"},
+      {"dish": "Harvest squash & lentils", "dietary": "Vegetarian entrée"},
+      {"dish": "Olive oil mashed potatoes", "dietary": "Vegetarian · nut-free ingredients"},
+      {"dish": "Autumn greens & cranberry relish", "dietary": "Vegetarian · nut-free ingredients"},
+      {"dish": "Spiced apple crumble", "dietary": "Vegetarian · nut-free ingredients"}
+    ],
+    "serviceDetails": ["Food delivered hot and ready to serve", "One attendant handles buffet setup, temperature control and cleanup", "Serving equipment and labeled utensils included in equipment fee", "No cooking, reheating or finishing by the host"]
+  },
+  {
+    "id": "maple-social", "name": "Maple Social", "tagline": "An elevated holiday buffet",
+    "perPerson": 49, "deliveryFee": 65, "serviceRate": 0.18, "taxRate": 0.085, "staffingFee": 90, "equipmentFee": 40, "minimumGuests": 10,
+    "readyToServe": true, "setupMinutes": 45, "deadlineHours": 72,
+    "vegetarian": "FICTIONAL CATALOG: mushroom and barley entrée available with separate utensils.", "nutAllergy": null,
+    "accessibility": "Buffet-only; seated assistance must be discussed.",
+    "menu": [{"dish": "Maple-glazed turkey", "dietary": "Standard entrée"}, {"dish": "Mushroom and barley entrée", "dietary": "Vegetarian"}, {"dish": "Seasonal vegetables", "dietary": "Vegetarian"}],
+    "serviceDetails": ["Ready-to-serve delivery", "Buffet attendant", "Allergy cross-contact procedures not documented"]
+  },
+  {
+    "id": "orchard-kitchen", "name": "Orchard Kitchen", "tagline": "A budget holiday meal kit",
+    "perPerson": 24, "deliveryFee": 25, "serviceRate": 0.08, "taxRate": 0.085, "staffingFee": 0, "equipmentFee": 0, "minimumGuests": 6,
+    "readyToServe": false, "setupMinutes": 90, "deadlineHours": 24,
+    "vegetarian": "FICTIONAL CATALOG: vegetarian meal kit offered.", "nutAllergy": null,
+    "accessibility": "Delivery only.",
+    "menu": [{"dish": "Chilled turkey tray", "dietary": "Requires host reheating — unsuitable"}, {"dish": "Vegetable meal kit", "dietary": "Vegetarian"}, {"dish": "Seasonal sides", "dietary": "Requires finishing"}],
+    "serviceDetails": ["Requires reheating and finishing at home; cannot satisfy this event"]
+  }
+]

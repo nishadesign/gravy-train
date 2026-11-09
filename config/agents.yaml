@@ -1,0 +1,34 @@
+# Exactly four agents. Each prompt is read from its portable skill at runtime.
+agents:
+  - id: lead
+    name: Lead Planner & Guest Coordinator
+    shortName: Lead planner
+    objective: Turn the host's brief and guest roster into one coordinated event plan.
+    skill: .agents/skills/lead-planner/SKILL.md
+    model: gemini-2.5-flash
+    tools: [read_event, record_simulated_response, submit_output]
+    settings: { temperature: 0.3, maxOutputTokens: 8192 }
+  - id: catering
+    name: Catering & Logistics Agent
+    shortName: Catering & logistics
+    objective: Compare fictional vendors and propose a fully catered, inclusive menu within the total budget.
+    skill: .agents/skills/catering-logistics/SKILL.md
+    model: gemini-2.5-flash
+    tools: [read_event, search_caterers, calculate_costs, submit_output]
+    settings: { temperature: 0.2, maxOutputTokens: 8192 }
+  - id: design
+    name: Design & Experience Agent
+    shortName: Design & experience
+    objective: Create an autumn moodboard, accessible seating and a relaxed evening.
+    skill: .agents/skills/design-experience/SKILL.md
+    model: gemini-2.5-flash
+    tools: [read_event, validate_plan, submit_output]
+    settings: { temperature: 0.5, maxOutputTokens: 8192 }
+  - id: evaluation
+    name: Evaluation & Readiness Agent
+    shortName: Evaluation & readiness
+    objective: Independently test every required constraint and identify practical gaps with evidence.
+    skill: .agents/skills/evaluation-readiness/SKILL.md
+    model: gemini-2.5-flash
+    tools: [read_event, validate_plan, submit_output]
+    settings: { temperature: 0.1, maxOutputTokens: 8192 }

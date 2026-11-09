@@ -1,0 +1,17 @@
+Host brief / versioned event / feedback
+                 |
+                 v
+       [Lead Planner & Guest Coordinator]
+                 |
+                 v
+       Allowed local tools:
+       read_event, record_simulated_response, submit_output
+                 |
+                 v
+      Validated own output section
+                 |
+                 v
+       Shared versioned event record
+                 |
+                 v
+     Evaluation -> lead routes corrections (max 2)

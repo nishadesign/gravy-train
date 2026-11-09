@@ -1,0 +1,29 @@
+import type { AgentId, EventRecord } from '../shared/types';
+import { timeOffset, clockLabel } from '../shared/sample';
+import { vendors, calculateQuote } from './domain';
+// This is an explicit local fixture, never used as a fallback for Gemini.
+export function previewOutput(id: AgentId, record: EventRecord, consolidate = false): unknown {
+  const { brief: b, guests, outputs } = record, v = vendors[0], at = (d: number) => timeOffset(b.dinnerTime, d);
+  if (id === 'lead' && consolidate) return { summary: `${b.guestCount} guests, a ${b.atmosphere.toLowerCase()} table and a proposed ${outputs.catering?.data.vendorName || 'catered'} buffet at ${clockLabel(b.dinnerTime)}. Estimated total: $${outputs.catering?.data.quote.total.toFixed(2) || '—'}. Readiness: ${outputs.evaluation?.data.status || 'not reviewed'}. Invitations are drafts; all vendors are fictional and no booking has been made.` };
+  if (id === 'lead') return {
+    eventBrief: `A ${b.atmosphere.toLowerCase()} Thanksgiving for ${b.guestCount}, fully catered at ${clockLabel(b.dinnerTime)}, within $${b.budget}.`,
+    requirements: [`${b.guestCount} guests; ${b.capacity} host-provided seats`, `${b.vegetarianCount} vegetarian meals; ${b.nutAllergyCount} nut allergy accommodation`, 'Ready-to-serve catered food; no host cooking or reheating', `${b.serviceStyle} service; accessible aisle and seated assistance`],
+    invitationDraft: `You're invited to gather around our Thanksgiving table on ${b.eventDate}! Arrive at ${clockLabel(at(-30))} for a cozy evening, with a fully catered buffet at ${clockLabel(b.dinnerTime)}. Please share your RSVP, dietary needs and any access requirements with the host. We'll bring the good food; you bring the good company. — Your host\n\nDRAFT ONLY · Not sent.`,
+    taskAssignments: [{ agent: 'catering', task: 'Compare ready-to-serve caterers, verify dietary evidence and include every fee.' }, { agent: 'design', task: 'Style the table, seat every guest and keep the buffet aisle accessible.' }, { agent: 'evaluation', task: 'Check each requirement and route any corrections with evidence.' }],
+    timeline: [{ kind: 'delivery', label: 'Caterer delivers ready-to-serve food', start: outputs.catering?.data.deliveryTime || at(-60), end: outputs.catering?.data.deliveryTime || at(-60), owner: 'Caterer' }, { kind: 'setup', label: 'Attendant sets up buffet and labeled utensils', start: outputs.catering?.data.deliveryTime || at(-60), end: timeOffset(outputs.catering?.data.deliveryTime || at(-60), outputs.catering?.data.setupMinutes || 30), owner: 'Caterer' }, { kind: 'guests', label: 'Welcome guests & settle in', start: at(-30), end: at(0), owner: 'Host' }, { kind: 'dinner', label: 'Thanksgiving buffet', start: at(0), end: at(60), owner: 'Everyone' }, { kind: 'entertainment', label: 'Gratitude cards & mellow music', start: at(60), end: at(90), owner: 'Host' }, { kind: 'cleanup', label: 'Caterer clears buffet and equipment', start: at(90), end: at(120), owner: 'Caterer' }],
+    summary: 'A coordinated local example is being assembled. Specialist outputs and readiness checks follow.',
+  };
+  if (id === 'catering') return {
+    vendorId: v.id, comparison: vendors.map(x => ({ vendorId: x.id, reason: !x.readyToServe ? 'Not suitable: requires home reheating or finishing.' : !x.nutAllergy && b.nutAllergyCount ? 'Missing nut allergy cross-contact information.' : `Documented ready-to-serve service; estimated $${calculateQuote(x.id, b.guestCount).total.toFixed(2)} including fees and event expenses.` })),
+    mealCount: b.guestCount, vegetarianMeals: b.vegetarianCount,
+    menu: v.menu.map(m => ({ ...m, quantity: m.dietary === 'Standard entrée' ? b.guestCount - b.vegetarianCount : m.dietary === 'Vegetarian entrée' ? b.vegetarianCount : b.guestCount })).filter(m => m.quantity > 0),
+    serviceChecklist: [...v.serviceDetails, 'Preserve a 36-inch buffet aisle and offer seated assistance', 'Verify sealed allergy meal, ingredient labels and separate utensils with the real vendor before ordering'],
+    vendorQuestions: ['Confirm real availability and the delivery window.', 'Confirm current ingredients and allergy cross-contact procedures with the guest and vendor.', 'Obtain a final written quote and order acceptance.', ...(b.changeAfterDeadline ? ['Late change: vendor acceptance is unresolved after the catering deadline.'] : [])],
+    deliveryTime: at(-60), setupMinutes: v.setupMinutes, orderStatus: 'proposed',
+  };
+  if (id === 'design') {
+    const ordered = [...guests.filter(g => g.accessibility && g.rsvp !== 'declined'), ...guests.filter(g => !g.accessibility && g.rsvp !== 'declined')];
+    return { moodboard: { title: 'An autumn kind of together', colors: [{ name: 'Sage linen', hex: '#9ba684' }, { name: 'Harvest gold', hex: '#dbac63' }, { name: 'Cranberry', hex: '#9d4c55' }, { name: 'Warm ivory', hex: '#f6eedc' }], materials: ['Host-provided linen', 'Amber glass', 'Paper leaves', 'Natural wood'] }, seats: ordered.map((g, i) => ({ guestId: g.id, seat: i + 1, accessible: !!g.accessibility })), decorChecklist: ['Use the host’s linen and everyday plates', 'Add low seasonal foliage and paper leaf place cards', 'Use battery candles and keep sightlines open', 'Keep decor and paper invitations within the $35 allowance'], entertainment: [{ time: at(-30), activity: 'A mellow acoustic welcome playlist' }, { time: at(60), activity: 'Pass around handwritten gratitude cards' }, { time: at(90), activity: 'Coffee, conversation & a relaxed photo moment' }], layoutNotes: 'Accessible seat 1 at the table end. Keep a 36-inch clear aisle to the buffet, with the attendant offering seated assistance. Use the host’s existing seats; any capacity shortage remains a host decision.' };
+  }
+  return { summary: 'Local deterministic checks are complete. This preview does not include an LLM coherence review. Catalog evidence is fictional; confirm real vendor details before ordering.', issues: [] };
+}

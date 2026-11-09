@@ -1,0 +1,17 @@
+Host brief / versioned event / feedback
+                 |
+                 v
+       [Evaluation & Readiness Agent]
+                 |
+                 v
+       Allowed local tools:
+       read_event, validate_plan, submit_output
+                 |
+                 v
+      Validated own output section
+                 |
+                 v
+       Shared versioned event record
+                 |
+                 v
+     Evaluation -> lead routes corrections (max 2)

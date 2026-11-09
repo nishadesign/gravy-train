@@ -1,0 +1,18 @@
+# Executed by npm run eval. These are deterministic scenarios, not model scores.
+cases:
+  - id: all_in_budget
+    kind: deterministic
+    scenario: over_budget
+    expectedStatus: NEEDS_REVISION
+  - id: missing_allergy_evidence
+    kind: deterministic
+    scenario: missing_dietary
+    expectedStatus: NEEDS_HOST_INPUT
+  - id: reject_cooking
+    kind: deterministic
+    scenario: home_cooking
+    expectedStatus: NEEDS_HOST_INPUT
+  - id: live_skill_contract
+    kind: llm
+    scenario: feasible
+    expectedBehavior: Real ADK run saves this skill output, uses its allowed tools, and preserves required gates.

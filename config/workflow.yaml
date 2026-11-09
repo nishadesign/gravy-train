@@ -1,0 +1,17 @@
+# The coordinator executes this order. The lead returns after evaluation.
+order: [lead, catering, design, evaluation]
+consolidate: lead
+correctionLimit: 2
+handoffs:
+  lead: Event brief and guest requirements
+  catering: Menu, service layout and itemized quote
+  design: Moodboard, seating and evening experience
+  evaluation: Readiness checks and corrections
+# When an agent revises its work, these downstream outputs become outdated.
+invalidation:
+  lead: [catering, design, evaluation]
+  catering: [design, evaluation]
+  design: [evaluation]
+  evaluation: []
+# Every gate must pass independently. No aesthetic score can override a gate.
+gates: [freshness, roster, budget, meals, vegetarian, dietary, seats, capacity, accessibility, timing, ready_to_serve, deadline]

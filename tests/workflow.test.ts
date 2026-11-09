@@ -1,0 +1,15 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { executeWorkflow, redact } from '../server/workflow';
+import { loadConfig } from '../server/config';
+import { newRecord, makeGuests } from '../shared/sample';
+import { markStale, validatePlan } from '../server/domain';
+import { fixture } from '../scripts/evaluate';
+import { deriveAgentStatuses } from '../src/agentStatus';
+// Functional tests skip presentation pacing; the timed smoke check exercises it separately.
+process.env.GATHER_FAST_PREVIEW = '1';
+test('sample workflow saves four owned outputs and independently passes every gate',async()=>{const r=newRecord();const run=await executeWorkflow({record:r,config:loadConfig(),mode:'preview'});assert.equal(run.status,'complete');assert.equal(r.outputs.evaluation?.data.status,'PASS');assert.equal(Object.keys(r.outputs).length,4);assert.ok(r.outputs.evaluation?.data.checks.every(c=>c.passed));assert.equal(r.outputs.catering?.data.orderStatus,'proposed');assert.ok(r.outputs.catering!.data.quote.total<900);});
+test('late RSVPs first fail existing meals and seats, then route and correct',async()=>{const r=fixture();r.brief.guestCount=14;r.guests=makeGuests(r.brief);r.version++;markStale(r,['lead','catering','design','evaluation']);const run=await executeWorkflow({record:r,config:loadConfig(),mode:'preview',evaluateFirst:true});const first=run.events.find(e=>e.type==='output'&&e.agent==='evaluation');const result=first?.record?.outputs.evaluation?.data;assert.ok(result?.issues.some(i=>i.id==='meals'));assert.ok(result?.issues.some(i=>i.id==='seats'));assert.ok(result?.issues.some(i=>i.id==='freshness'));assert.equal(r.outputs.catering?.data.mealCount,14);assert.equal(r.outputs.design?.data.seats.length,14);assert.equal(r.outputs.evaluation?.data.status,'PASS');assert.ok(run.events.some(e=>e.round===1));assert.ok(!run.events.some(e=>(e.round||0)>2));const statuses=deriveAgentStatuses(r,run,false);assert.equal(statuses.catering.task,'14 meals proposed');assert.equal(statuses.catering.phase,'Correction 1');assert.equal(statuses.design.task,'14 seats assigned');assert.equal(statuses.evaluation.tone,'done');});
+test('after-deadline changes stay unresolved even after quantities are fixed',async()=>{const r=fixture('late_deadline');const run=await executeWorkflow({record:r,config:loadConfig(),mode:'preview',evaluateFirst:true});assert.equal(run.status,'complete');assert.equal(r.outputs.evaluation?.data.status,'NEEDS_HOST_INPUT');assert.ok(r.outputs.evaluation?.data.issues.some(i=>i.id==='deadline'));});
+test('each hard constraint fails independently',()=>{for(const [scenario,id] of [['over_budget','budget'],['missing_dietary','dietary'],['home_cooking','ready_to_serve'],['insufficient_seating','capacity'],['late_deadline','deadline']]) assert.equal(validatePlan(fixture(scenario)).find(c=>c.id===id)?.passed,false);});
+test('credentials are redacted recursively',()=>{assert.deepEqual(redact({apiKey:'secret',error:'using custom-secret',nested:{authorization:'x'}},['custom-secret']),{apiKey:'[REDACTED]',error:'using [REDACTED]',nested:{authorization:'[REDACTED]'}});});

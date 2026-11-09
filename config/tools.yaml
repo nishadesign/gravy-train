@@ -1,0 +1,38 @@
+# The loader connects only these declared, local tool implementations.
+tools:
+  - name: read_event
+    purpose: Read the current brief, guest roster and relevant versioned agent outputs.
+    inputs: None
+    outputs: Current event record, current version and fictional-data notice
+    dataSource: Shared event record
+    modifiesState: false
+  - name: search_caterers
+    purpose: Compare the fictional local catalog including fees, service and dietary evidence.
+    inputs: readyToServeOnly (boolean)
+    outputs: Fictional vendors and computed total quotes
+    dataSource: data/caterers.json (fictional; no web search or contact)
+    modifiesState: false
+  - name: calculate_costs
+    purpose: Calculate food, delivery, service fee, staffing, equipment, tax, decor and contingency.
+    inputs: vendorId (string), mealCount (integer)
+    outputs: Itemized USD quote including every event expense
+    dataSource: Fictional catalog prices and fixed prototype expense allowances
+    modifiesState: false
+  - name: validate_plan
+    purpose: Independently check totals, dietary evidence, meals, seating, accessibility, freshness, deadlines and timing.
+    inputs: None
+    outputs: One pass or issue per required constraint, with evidence and responsible agent
+    dataSource: Current event record and fictional catalog
+    modifiesState: false
+  - name: record_simulated_response
+    purpose: Record a host-authorized simulated guest or vendor note; rejects absent or mismatched authorization. Cannot confirm an order.
+    inputs: kind (rsvp or vendor), note (string), guestId and rsvp (optional)
+    outputs: Labeled simulation note or authorization error; host simulation controls own roster changes
+    dataSource: Local simulation only; no external communications
+    modifiesState: true
+  - name: submit_output
+    purpose: Validate and save only this agent's own output; reject stale writes and invalidate dependent outputs.
+    inputs: Agent-specific structured output (schema supplied by runtime)
+    outputs: Saved version and revision, or a validation error
+    dataSource: Shared versioned event record
+    modifiesState: true
